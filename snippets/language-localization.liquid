@@ -1,0 +1,62 @@
+{%- comment -%}
+  Renders the language picker for the localization form
+
+  Accepts:
+    - localPosition: pass in the position in which the form is coming up to create specific IDs
+{%- endcomment -%}
+
+<style>
+  .custom-language-selector {
+    display: flex;
+  }
+  .custom-language-selector__link--active {
+    font-weight: bold;
+  }
+</style>
+
+<div class="disclosure">
+  <div class="custom-language-selector">
+    {%- for language in localization.available_languages -%}
+      <a
+        class="link link--text disclosure__link caption-large focus-inset {% if language.iso_code == localization.language.iso_code %}custom-language-selector__link--active{% endif %}"
+        href="#"
+        hreflang="{{ language.iso_code }}"
+        lang="{{ language.iso_code }}"
+        {% if language.iso_code == localization.language.iso_code %}
+          aria-current="true"
+        {% endif %}
+        data-value="{{ language.iso_code }}"
+      >
+        <!--
+          <span
+            {% if language.iso_code != localization.language.iso_code %}
+              class="visibility-hidden"
+            {% endif %}
+          >
+            {{- 'icon-checkmark.svg' | inline_asset_content -}}
+          </span>
+        -->
+        <span>
+          {% if language.endonym_name == 'Español' %}
+            ES
+          {% endif %}
+          {% if language.endonym_name == 'English' %}
+            EN
+          {% endif %}
+        </span>
+      </a>
+    {% endfor %}
+  </div>
+  <button
+    type="button"
+    class="disclosure__button localization-form__select localization-selector link link--text caption-large"
+    style="display:none"
+    aria-expanded="false"
+    aria-controls="{{ localPosition }}List"
+    aria-describedby="{{ localPosition }}Label"
+  >
+    <span>{{ localization.language.endonym_name | capitalize }}</span>
+    {{ 'icon-caret.svg' | inline_asset_content }}
+  </button>
+</div>
+<input type="hidden" name="locale_code" value="{{ localization.language.iso_code }}">
